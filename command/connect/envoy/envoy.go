@@ -266,6 +266,7 @@ func (c *cmd) run(args []string) int {
 			}
 			c.proxyID = gatewaySvc.ID
 			c.gatewaySvcName = gatewaySvc.Service
+			fmt.Println("TEST -2- Received svc: %s", gatewaySvc)
 
 		case c.gateway != "" && c.register:
 			c.proxyID = c.gatewaySvcName
@@ -283,7 +284,7 @@ func (c *cmd) run(args []string) int {
 			c.UI.Error("Auto-Registration can only be used for gateways")
 			return 1
 		}
-
+		fmt.Println("TEST - register() called.")
 		taggedAddrs := make(map[string]api.ServiceAddress)
 		lanAddr := c.lanAddress.Value()
 		if lanAddr.Address != "" {
@@ -362,7 +363,10 @@ func (c *cmd) run(args []string) int {
 		return 1
 	}
 
+	fmt.Println("TEST - generateConfig: %s", string(bootstrapJson))
+
 	if c.bootstrap {
+		fmt.Println("TEST - print bootstrap only")
 		// Just output it and we are done
 		os.Stdout.Write(bootstrapJson)
 		return 0
@@ -393,6 +397,7 @@ func (c *cmd) run(args []string) int {
 var errUnsupportedOS = errors.New("envoy: not implemented on this operating system")
 
 func (c *cmd) findBinary() (string, error) {
+	fmt.Println("TEST - finding envoy binary")
 	if c.envoyBin != "" {
 		return c.envoyBin, nil
 	}

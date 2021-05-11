@@ -252,11 +252,13 @@ func LookupProxyIDForSidecar(client *api.Client, sidecarFor string) (string, err
 // agent. If exactly one gateway exists it will be returned, otherwise an error
 // is returned.
 func LookupGatewayProxy(client *api.Client, kind api.ServiceKind) (*api.AgentService, error) {
+	fmt.Println("TEST - LookupGatewayProxy() called.")
 	svcs, err := client.Agent().ServicesWithFilter(fmt.Sprintf("Kind == `%s`", kind))
+
 	if err != nil {
 		return nil, fmt.Errorf("Failed looking up %s instances: %v", kind, err)
 	}
-
+	fmt.Println("TEST -1- Received svc: %s", svcs)
 	switch len(svcs) {
 	case 0:
 		return nil, fmt.Errorf("No %s services registered with this agent", kind)

@@ -69,6 +69,7 @@ func makeBootstrapPipe(bootstrapJSON []byte) (string, error) {
 		return pipeFile, err
 	}
 
+	fmt.Println("TEST - makeBootstrapPipe() called, pipe file: %s", pipeFile)
 	// Get our own executable path.
 	execPath, err := os.Executable()
 	if err != nil {
@@ -107,7 +108,7 @@ func makeBootstrapPipe(bootstrapJSON []byte) (string, error) {
 	if err != nil {
 		return pipeFile, err
 	}
-
+	fmt.Println("TEST - successfully write to Bootstrap pipe file: %s", pipeFile)
 	// We can't wait for the process since we need to exec into Envoy before it
 	// will be able to complete so it will be remain as a zombie until Envoy is
 	// killed then will be reaped by the init process (pid 0). This is all a bit
@@ -118,6 +119,7 @@ func makeBootstrapPipe(bootstrapJSON []byte) (string, error) {
 }
 
 func execEnvoy(binary string, prefixArgs, suffixArgs []string, bootstrapJSON []byte) error {
+	fmt.Println("TEST - execEnvoy() called")
 	pipeFile, err := makeBootstrapPipe(bootstrapJSON)
 	if err != nil {
 		os.RemoveAll(pipeFile)
@@ -146,6 +148,7 @@ func execEnvoy(binary string, prefixArgs, suffixArgs []string, bootstrapJSON []b
 	}
 	envoyArgs = append(envoyArgs, suffixArgs...)
 
+	fmt.Println("TEST -3- Starting envoy wit args: ", envoyArgs)
 	// Exec
 	if err = unix.Exec(binary, envoyArgs, os.Environ()); err != nil {
 		return errors.New("Failed to exec envoy: " + err.Error())
