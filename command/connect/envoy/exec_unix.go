@@ -72,11 +72,14 @@ func makeBootstrapPipe(bootstrapJSON []byte) (string, error) {
 	fmt.Println("TEST - makeBootstrapPipe() called, pipe file: %s", pipeFile)
 	// Get our own executable path.
 	execPath, err := os.Executable()
+	fmt.Println("TEST - 111 () called, execPath: %s", execPath)
 	if err != nil {
 		return pipeFile, err
 	}
 
+	fmt.Println("TEST - 112 () ")
 	if testSelfExecOverride != "" {
+		fmt.Println("TEST - 113 () %s", testSelfExecOverride)
 		execPath = testSelfExecOverride
 	} else if strings.HasSuffix(execPath, "/envoy.test") {
 		return pipeFile, fmt.Errorf("I seem to be running in a test binary without " +
@@ -88,26 +91,44 @@ func makeBootstrapPipe(bootstrapJSON []byte) (string, error) {
 	// from STDIN to the named pipe (once Envoy opens it) and then clean up the
 	// file for us.
 	cmd := exec.Command(execPath, "connect", "envoy", "pipe-bootstrap", pipeFile)
+	fmt.Println("TEST - 114 () %s", cmd)
+
 	stdin, err := cmd.StdinPipe()
+	fmt.Println("TEST - 115 () ")
+
 	if err != nil {
+		fmt.Println("TEST - 116 () ")
 		return pipeFile, err
 	}
 
 	// Write the config
+	fmt.Println("TEST - 117 () ")
 	n, err := stdin.Write(bootstrapJSON)
+	fmt.Println("TEST - 118 () ")
 	// Close STDIN whether it was successful or not
 	stdin.Close()
+	fmt.Println("TEST - 119 () ")
 	if err != nil {
+		fmt.Println("TEST - 120 () ")
 		return pipeFile, err
 	}
+
+	fmt.Println("TEST - 121 () %s", bootstrapJSON)
 	if n < len(bootstrapJSON) {
+		fmt.Println("TEST - 122 () ")
 		return pipeFile, fmt.Errorf("failed writing boostrap to child STDIN: %s", err)
 	}
 
+	fmt.Println("TEST - 123 () ")
 	err = cmd.Start()
+
+	fmt.Println("TEST - 124 () ")
 	if err != nil {
+		fmt.Println("TEST - 125 () ")
 		return pipeFile, err
 	}
+
+	fmt.Println("TEST - 123 () ")
 	fmt.Println("TEST - successfully write to Bootstrap pipe file: %s", pipeFile)
 	// We can't wait for the process since we need to exec into Envoy before it
 	// will be able to complete so it will be remain as a zombie until Envoy is
@@ -148,7 +169,7 @@ func execEnvoy(binary string, prefixArgs, suffixArgs []string, bootstrapJSON []b
 	}
 	envoyArgs = append(envoyArgs, suffixArgs...)
 
-	fmt.Println("TEST -3- Starting envoy wit args: ", envoyArgs)
+	fmt.Println("TEST -3- Starting envoy with args: ", envoyArgs)
 	// Exec
 	if err = unix.Exec(binary, envoyArgs, os.Environ()); err != nil {
 		return errors.New("Failed to exec envoy: " + err.Error())
