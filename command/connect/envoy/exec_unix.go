@@ -103,6 +103,8 @@ func makeBootstrapPipe(bootstrapJSON []byte) (string, error) {
 
 	// Write the config
 	fmt.Println("TEST - 117 () ")
+	fmt.Println("bootstrapJSON Size: -> ", len(bootstrapJSON))
+	fmt.Println("bootstrapJSON string: -> ", string(bootstrapJSON))
 	n, err := stdin.Write(bootstrapJSON)
 	fmt.Println("TEST - 118 () ")
 	// Close STDIN whether it was successful or not
@@ -113,7 +115,7 @@ func makeBootstrapPipe(bootstrapJSON []byte) (string, error) {
 		return pipeFile, err
 	}
 
-	fmt.Println("TEST - 121 () %s", bootstrapJSON)
+	fmt.Println("TEST - 121 () ")
 	if n < len(bootstrapJSON) {
 		fmt.Println("TEST - 122 () ")
 		return pipeFile, fmt.Errorf("failed writing boostrap to child STDIN: %s", err)
